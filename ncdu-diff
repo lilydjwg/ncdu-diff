@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+
+import sys
+import json
+
+def main(fa, fb):
+  with open(fa, errors='replace') as f:
+    a = json.load(f)
+  with open(fb, errors='replace') as f:
+    b = json.load(f)
+
+  a[3][0]['name'] = '/'
+  b[3][0]['name'] = '/'
+
+  result = merge(a[3], b[3])
+
+  data = a[:3]
+  data.append(result)
+  json.dump(data, sys.stdout, ensure_ascii=False, indent=1)
+
+def merge(src, dst):
+  ret = []
+
+  info = src[0].copy()
+  binfo = dst[0]
+  info['asize'] = info.get('asize', 0) - binfo.get('asize', 0)
+  info['dsize'] = info.get('dsize', 0) - binfo.get('dsize', 0)
+  ret.append(info)
+
+  src_ = src[1:]
+  dst_ = dst[1:]
+
+  src_dict = {x['name'] if isinstance(x, dict) else x[0]['name']: x for x in src_}
+  dst_dict = {x['name'] if isinstance(x, dict) else x[0]['name']: x for x in dst_}
+
+  src_names = set(src_dict.keys())
+  dst_names = set(dst_dict.keys())
+
+  new_names = src_names - dst_names
+  deleted_names = dst_names - src_names
+
+  for name, x in src_dict.items():
+    if name in new_names:
+      sub = x.copy()
+      if isinstance(sub, list):
+        sub[0]['name'] = f"{sub[0]['name']} (new)"
+      else:
+        sub['name'] = f"{sub['name']} (new)"
+    else:
+      y = dst_dict[name]
+      if isinstance(x, list) and isinstance(y, list):
+        sub = merge(x, y)
+      elif isinstance(x, list):
+        sub = x[0].copy()
+        sub['name'] = f"{sub['name']} (d->f)"
+        sub['asize'] = sub.get('asize', 0) - y.get('asize', 0)
+        sub['dsize'] = sub.get('dsize', 0) - y.get('dsize', 0)
+      elif isinstance(y, list):
+        y_ = y[0]
+        sub = x.copy()
+        sub['name'] = f"{sub['name']} (f->d)"
+        sub['asize'] = sub.get('asize', 0) - y_.get('asize', 0)
+        sub['dsize'] = sub.get('dsize', 0) - y_.get('dsize', 0)
+      else:
+        sub = x.copy()
+        sub['asize'] = sub.get('asize', 0) - y.get('asize', 0)
+        sub['dsize'] = sub.get('dsize', 0) - y.get('dsize', 0)
+
+    if (isinstance(sub, list) and len(sub) > 1) or \
+       (isinstance(sub, dict) and sub.get('dsize', 0) != 0):
+      ret.append(sub)
+
+  for name in deleted_names:
+    x = dst_dict[name]
+    if isinstance(x, list):
+      sub = x[0]
+      sub['name'] = f"{sub['name']} (dir deleted)"
+      sub['asize'] = -tree_size(x, 'asize')
+      sub['dsize'] = -tree_size(x, 'dsize')
+    else:
+      sub = x.copy()
+      sub['name'] = f"{sub['name']} (deleted)"
+      sub['asize'] = -sub.get('asize', 0)
+      sub['dsize'] = -sub.get('dsize', 0)
+    if sub['dsize'] != 0:
+      ret.append(sub)
+
+  return ret
+
+def tree_size(tree, key):
+  s = 0
+  for x in tree:
+    if isinstance(x, list):
+      s += tree_size(x, key)
+    else:
+      s += x.get(key, 0)
+  return s
+
+if __name__ == '__main__':
+  main(*sys.argv[1:])
+

@@ -1,0 +1,130 @@
+diff -Naur ncdu-1.12-old/src/browser.c ncdu-1.12/src/browser.c
+--- ncdu-1.12-old/src/browser.c	2016-08-25 02:42:36.000000000 +0800
++++ ncdu-1.12/src/browser.c	2017-08-05 13:53:22.604249533 +0800
+@@ -103,7 +103,7 @@
+         graph == 2 ? 21 :
+                      32 ;
+     if(show_items)
+-      o += 7;
++      o += 8;
+     mvaddstr(row, o, "/..");
+     if(n->flags & FF_BSEL)
+       attroff(A_REVERSE);
+@@ -141,8 +141,8 @@
+ 
+   x = 0;
+ 
+-  mvprintw(row, x, "%c %9s ", ct, size);
+-  x += 12;
++  mvprintw(row, x, "%c %10s ", ct, size);
++  x += 13;
+ 
+   if (show_items) {
+     if (n->items > 99999)
+@@ -168,7 +168,7 @@
+ 
+ void browse_draw() {
+   struct dir *t;
+-  char fmtsize[10], *tmp;
++  char fmtsize[11], *tmp;
+   int selected = 0, i;
+ 
+   erase();
+diff -Naur ncdu-1.12-old/src/dir_import.c ncdu-1.12/src/dir_import.c
+--- ncdu-1.12-old/src/dir_import.c	2016-08-25 02:43:01.000000000 +0800
++++ ncdu-1.12/src/dir_import.c	2017-08-05 11:44:37.730744344 +0800
+@@ -288,6 +288,39 @@
+   return 0;
+ }
+ 
++static int rsint64(int64_t *val, int64_t max) {
++  int64_t v;
++  int haschar = 0;
++  int neg = 0;
++  *val = 0;
++  if(*ctx->buf == '-') {
++    neg = 1;
++    con(1);
++  }
++  while(1) {
++    C(!*ctx->buf && fill(1));
++    if(*ctx->buf == '0' && !haschar) {
++      con(1);
++      break;
++    }
++    if(*ctx->buf >= '0' && *ctx->buf <= '9') {
++      haschar = 1;
++      v = (*val)*10 + (*ctx->buf-'0');
++      E(v < *val, "Invalid (positive) integer");
++      *val = v;
++      con(1);
++      continue;
++    }
++    E(!haschar, "Invalid (positive) integer");
++    break;
++  }
++  E(*val > max, "Integer out of range");
++  if(neg) {
++    *val = -*val;
++  }
++  return 0;
++}
++
+ 
+ /* Parse and consume a JSON number. The result is discarded.
+  * TODO: Improve validation. */
+@@ -453,10 +486,10 @@
+       memcpy(tmp, d, SDIRSIZE-1);
+       d = tmp;
+     } else if(strcmp(ctx->val, "asize") == 0) {      /* asize */
+-      C(rint64(&iv, INT64_MAX));
++      C(rsint64(&iv, INT64_MAX));
+       d->asize = iv;
+     } else if(strcmp(ctx->val, "dsize") == 0) {      /* dsize */
+-      C(rint64(&iv, INT64_MAX));
++      C(rsint64(&iv, INT64_MAX));
+       d->size = iv;
+     } else if(strcmp(ctx->val, "dev") == 0) {        /* dev */
+       C(rint64(&iv, UINT64_MAX));
+diff -Naur ncdu-1.12-old/src/util.c ncdu-1.12/src/util.c
+--- ncdu-1.12-old/src/util.c	2016-08-25 02:44:04.000000000 +0800
++++ ncdu-1.12/src/util.c	2017-08-05 12:40:58.806212481 +0800
+@@ -61,8 +61,8 @@
+ 
+ 
+ char *formatsize(int64_t from) {
+-  static char dat[10]; /* "xxx.x MiB" */
+-  float r = from;
++  static char dat[11]; /* "xxx.x MiB" */
++  float r = abs(from);
+   char c = ' ';
+   if (si) {
+     if(r < 1000.0f)   { }
+@@ -72,6 +72,7 @@
+     else if(r < 1e15f){ c = 'T'; r/=1e12f; }
+     else if(r < 1e18f){ c = 'P'; r/=1e15f; }
+     else              { c = 'E'; r/=1e18f; }
++    if(from < 0) r = -r;
+     sprintf(dat, "%5.1f %cB", r, c);
+   }
+   else {
+@@ -82,6 +83,7 @@
+     else if(r < 1023e12f){ c = 'T'; r/=1099511627776.0f; }
+     else if(r < 1023e15f){ c = 'P'; r/=1125899906842624.0f; }
+     else                 { c = 'E'; r/=1152921504606846976.0f; }
++    if(from < 0) r = -r;
+     sprintf(dat, "%5.1f %c%cB", r, c, c == ' ' ? ' ' : 'i');
+   }
+   return dat;
+diff -Naur ncdu-1.12-old/src/util.h ncdu-1.12/src/util.h
+--- ncdu-1.12-old/src/util.h	2016-08-25 02:44:06.000000000 +0800
++++ ncdu-1.12/src/util.h	2017-08-05 13:08:22.329700875 +0800
+@@ -94,7 +94,7 @@
+  * behaviour, and (INT64_MAX - b >= a) didn't work for some reason. */
+ #define adds64(a, b) ((a) > 0 && (b) > 0\
+     ? ((uint64_t)(a) + (uint64_t)(b) > (uint64_t)INT64_MAX ? INT64_MAX : (a)+(b))\
+-    : (a)+(b) < 0 ? 0 : (a)+(b))
++    : (a)+(b))
+ 
+ /* Adds a value to the size, asize and items fields of *d and its parents */
+ void addparentstats(struct dir *, int64_t, int64_t, int);
