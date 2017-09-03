@@ -2,8 +2,17 @@
 
 import sys
 import json
+import os
 
 def main(fa, fb):
+  if os.path.isdir(fa):
+    os.system("ncdu -o .ncdu-left.tmp %s 2>/dev/null" % fa)
+    fa=".ncdu-left.tmp"
+
+  if os.path.isdir(fb):
+    os.system("ncdu -o .ncdu-right.tmp %s 2>/dev/null" % fb)
+    fb=".ncdu-right.tmp"
+
   with open(fa, errors='replace') as f:
     a = json.load(f)
   with open(fb, errors='replace') as f:
@@ -16,7 +25,12 @@ def main(fa, fb):
 
   data = a[:3]
   data.append(result)
-  json.dump(data, sys.stdout, ensure_ascii=False, indent=1)
+  # json.dump(data, sys.stdout, ensure_ascii=False, indent=1)
+
+  with open(".ncdu-result.tmp", "w", errors='replace') as f:
+    json.dump(data, f, ensure_ascii=False)
+  os.system("ncdu -f .ncdu-result.tmp")
+  os.system("rm -f .ncdu-*.tmp")
 
 def merge(src, dst):
   ret = []
