@@ -12,7 +12,7 @@ def main(fa, fb):
   a[3][0]['name'] = '/'
   b[3][0]['name'] = '/'
 
-  result = merge(a[3], b[3])
+  result = merge(b[3], a[3])
 
   data = a[:3]
   data.append(result)
