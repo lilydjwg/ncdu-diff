@@ -96,7 +96,7 @@ diff -Naur ncdu-1.12-old/src/util.c ncdu-1.12/src/util.c
 -  static char dat[10]; /* "xxx.x MiB" */
 -  float r = from;
 +  static char dat[11]; /* "xxx.x MiB" */
-+  float r = abs(from);
++  double r = labs(from);
    char c = ' ';
    if (si) {
      if(r < 1000.0f)   { }
