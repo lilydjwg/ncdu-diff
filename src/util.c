@@ -90,6 +90,7 @@ void printsize(enum ui_coltype t, int64_t from) {
   char *unit;
   double r = formatsize(from, &unit);
   uic_set(t == UIC_HD ? UIC_NUM_HD : t == UIC_SEL ? UIC_NUM_SEL : UIC_NUM);
+  if(from < 0) r = -r;
   printw("%5.1f", r);
   addchc(t, ' ');
   addstrc(t, unit);
