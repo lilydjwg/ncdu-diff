@@ -129,7 +129,7 @@ void nctab(int, int, int, char *);
 char *cropstr(const char *, int);
 
 /* Converts the given size in bytes into a float (0 <= f < 1000) and a unit string */
-float formatsize(int64_t, char **);
+double formatsize(int64_t, char **);
 
 /* print size in the form of xxx.x XB */
 void printsize(enum ui_coltype, int64_t);
@@ -160,7 +160,7 @@ struct dir *getroot(struct dir *);
  * behaviour, and (INT64_MAX - b >= a) didn't work for some reason. */
 #define adds64(a, b) ((a) > 0 && (b) > 0\
     ? ((uint64_t)(a) + (uint64_t)(b) > (uint64_t)INT64_MAX ? INT64_MAX : (a)+(b))\
-    : (a)+(b) < 0 ? 0 : (a)+(b))
+    : (a)+(b))
 
 /* Adds a value to the size, asize and items fields of *d and its parents */
 void addparentstats(struct dir *, int64_t, int64_t, uint64_t, int);

@@ -286,6 +286,39 @@ static int rint64(uint64_t *val, uint64_t max) {
   return 0;
 }
 
+static int rsint64(int64_t *val, int64_t max) {
+  int64_t v;
+  int haschar = 0;
+  int neg = 0;
+  *val = 0;
+  if(*ctx->buf == '-') {
+    neg = 1;
+    con(1);
+  }
+  while(1) {
+    C(!*ctx->buf && fill(1));
+    if(*ctx->buf == '0' && !haschar) {
+      con(1);
+      break;
+    }
+    if(*ctx->buf >= '0' && *ctx->buf <= '9') {
+      haschar = 1;
+      v = (*val)*10 + (*ctx->buf-'0');
+      E(v < *val, "Invalid (positive) integer");
+      *val = v;
+      con(1);
+      continue;
+    }
+    E(!haschar, "Invalid (positive) integer");
+    break;
+  }
+  E(*val > max, "Integer out of range");
+  if(neg) {
+    *val = -*val;
+  }
+  return 0;
+}
+
 
 /* Parse and consume a JSON number. The result is discarded.
  * TODO: Improve validation. */
@@ -437,10 +470,10 @@ static int iteminfo() {
       E(ctx->val[MAX_VAL-1] != 1, "Too large string value");
       strcpy(ctx->buf_name, ctx->val);
     } else if(strcmp(ctx->val, "asize") == 0) {      /* asize */
-      C(rint64(&iv, INT64_MAX));
+      C(rsint64(&iv, INT64_MAX));
       ctx->buf_dir->asize = iv;
     } else if(strcmp(ctx->val, "dsize") == 0) {      /* dsize */
-      C(rint64(&iv, INT64_MAX));
+      C(rsint64(&iv, INT64_MAX));
       ctx->buf_dir->size = iv;
     } else if(strcmp(ctx->val, "dev") == 0) {        /* dev */
       C(rint64(&iv, UINT64_MAX));

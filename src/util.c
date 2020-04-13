@@ -61,8 +61,8 @@ char *cropstr(const char *from, int s) {
 }
 
 
-float formatsize(int64_t from, char **unit) {
-  float r = from;
+double formatsize(int64_t from, char **unit) {
+  double r = llabs(from);
   if (si) {
     if(r < 1000.0f)   { *unit = " B"; }
     else if(r < 1e6f) { *unit = "KB"; r/=1e3f; }
@@ -87,7 +87,7 @@ float formatsize(int64_t from, char **unit) {
 
 void printsize(enum ui_coltype t, int64_t from) {
   char *unit;
-  float r = formatsize(from, &unit);
+  double r = formatsize(from, &unit);
   uic_set(t == UIC_HD ? UIC_NUM_HD : t == UIC_SEL ? UIC_NUM_SEL : UIC_NUM);
   printw("%5.1f", r);
   addchc(t, ' ');
