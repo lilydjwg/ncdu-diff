@@ -1,6 +1,6 @@
 /* ncdu - NCurses Disk Usage
 
-  Copyright (c) 2007-2019 Yoran Heling
+  Copyright (c) 2007-2020 Yoran Heling
 
   Permission is hereby granted, free of charge, to any person obtaining
   a copy of this software and associated documentation files (the
@@ -103,7 +103,7 @@ int dir_export_init(const char *fn);
 
 
 /* Function set by input code. Returns dir_output.final(). */
-int (*dir_process)();
+extern int (*dir_process)();
 
 /* Scanning a live directory */
 extern int dir_scan_smfs;

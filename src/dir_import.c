@@ -1,6 +1,6 @@
 /* ncdu - NCurses Disk Usage
 
-  Copyright (c) 2007-2019 Yoran Heling
+  Copyright (c) 2007-2020 Yoran Heling
 
   Permission is hereby granted, free of charge, to any person obtaining
   a copy of this software and associated documentation files (the
@@ -629,12 +629,12 @@ int dir_import_init(const char *fn) {
   else if((stream = fopen(fn, "r")) == NULL)
     return 1;
 
-  ctx = malloc(sizeof(struct ctx));
+  ctx = xmalloc(sizeof(struct ctx));
   ctx->stream = stream;
   ctx->line = 1;
   ctx->byte = ctx->eof = ctx->items = 0;
   ctx->buf = ctx->lastfill = ctx->readbuf;
-  ctx->buf_dir = malloc(dir_memsize(""));
+  ctx->buf_dir = xmalloc(dir_memsize(""));
   ctx->readbuf[0] = 0;
 
   dir_curpath_set(fn);

@@ -1,6 +1,6 @@
 /* ncdu - NCurses Disk Usage
 
-  Copyright (c) 2007-2019 Yoran Heling
+  Copyright (c) 2007-2020 Yoran Heling
 
   Permission is hereby granted, free of charge, to any person obtaining
   a copy of this software and associated documentation files (the
@@ -31,6 +31,7 @@
 #include <stdarg.h>
 
 
+int (*dir_process)();
 char *dir_curpath;   /* Full path of the last seen item. */
 struct dir_output dir_output;
 char *dir_fatalerr; /* Error message on a fatal error. (NULL if there was no fatal error) */
@@ -44,7 +45,7 @@ static int lasterrl; /* ^ of lasterr */
 static void curpath_resize(int s) {
   if(curpathl < s) {
     curpathl = s < 128 ? 128 : s < curpathl*2 ? curpathl*2 : s;
-    dir_curpath = realloc(dir_curpath, curpathl);
+    dir_curpath = xrealloc(dir_curpath, curpathl);
   }
 }
 
@@ -85,9 +86,9 @@ void dir_setlasterr(const char *path) {
   int req = strlen(path)+1;
   if(lasterrl < req) {
     lasterrl = req;
-    lasterr = realloc(lasterr, lasterrl);
+    lasterr = xrealloc(lasterr, lasterrl);
   }
-  strcpy(lasterr, dir_curpath);
+  strcpy(lasterr, path);
 }
 
 
@@ -99,7 +100,7 @@ void dir_seterr(const char *fmt, ...) {
 
   va_list va;
   va_start(va, fmt);
-  dir_fatalerr = malloc(1024); /* Should be enough for everything... */
+  dir_fatalerr = xmalloc(1024); /* Should be enough for everything... */
   vsnprintf(dir_fatalerr, 1023, fmt, va);
   dir_fatalerr[1023] = 0;
   va_end(va);
@@ -119,10 +120,10 @@ static void draw_progress() {
 
   ncaddstr(2, 2, "Total items: ");
   uic_set(UIC_NUM);
-  printw("%-8d", dir_output.items);
+  printw("%-9d", dir_output.items);
 
   if(dir_output.size) {
-    ncaddstrc(UIC_DEFAULT, 2, 23, "size: ");
+    ncaddstrc(UIC_DEFAULT, 2, 24, "size: ");
     printsize(UIC_DEFAULT, dir_output.size);
   }
 

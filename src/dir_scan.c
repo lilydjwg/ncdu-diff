@@ -1,6 +1,6 @@
 /* ncdu - NCurses Disk Usage
 
-  Copyright (c) 2007-2019 Yoran Heling
+  Copyright (c) 2007-2020 Yoran Heling
 
   Permission is hereby granted, free of charge, to any person obtaining
   a copy of this software and associated documentation files (the
@@ -100,7 +100,7 @@ static char *dir_read(int *err) {
     return NULL;
   }
 
-  buf = malloc(buflen);
+  buf = xmalloc(buflen);
   errno = 0;
 
   while((item = readdir(dir)) != NULL) {
@@ -109,7 +109,7 @@ static char *dir_read(int *err) {
     int req = off+3+strlen(item->d_name);
     if(req > buflen) {
       buflen = req < buflen*2 ? buflen*2 : req;
-      buf = realloc(buf, buflen);
+      buf = xrealloc(buf, buflen);
     }
     strcpy(buf+off, item->d_name);
     off += strlen(item->d_name)+1;
@@ -212,7 +212,7 @@ static int dir_scan_item(const char *name) {
   }
 
   if(cachedir_tags && (buf_dir->flags & FF_DIR) && !(buf_dir->flags & (FF_ERR|FF_EXL|FF_OTHFS)))
-    if(has_cachedir_tag(buf_dir->name)) {
+    if(has_cachedir_tag(name)) {
       buf_dir->flags |= FF_EXL;
       buf_dir->size = buf_dir->asize = 0;
     }
@@ -312,6 +312,7 @@ void dir_scan_init(const char *path) {
   dir_setlasterr(NULL);
   dir_seterr(NULL);
   dir_process = process;
-  buf_dir = malloc(dir_memsize(""));
+  if (!buf_dir)
+    buf_dir = xmalloc(dir_memsize(""));
   pstate = ST_CALC;
 }

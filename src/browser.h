@@ -1,6 +1,6 @@
 /* ncdu - NCurses Disk Usage
 
-  Copyright (c) 2007-2019 Yoran Heling
+  Copyright (c) 2007-2020 Yoran Heling
 
   Permission is hereby granted, free of charge, to any person obtaining
   a copy of this software and associated documentation files (the
@@ -28,7 +28,6 @@
 
 #include "global.h"
 
-int  confirm_quit;
 int  browse_key(int);
 void browse_draw(void);
 void browse_init(struct dir *);

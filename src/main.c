@@ -1,6 +1,6 @@
 /* ncdu - NCurses Disk Usage
 
-  Copyright (c) 2007-2019 Yoran Heling
+  Copyright (c) 2007-2020 Yoran Heling
 
   Permission is hereby granted, free of charge, to any person obtaining
   a copy of this software and associated documentation files (the
@@ -42,6 +42,7 @@ long update_delay = 100;
 int cachedir_tags = 0;
 int extended_info = 0;
 int follow_symlinks = 0;
+int confirm_quit = 0;
 
 static int min_rows = 17, min_cols = 60;
 static int ncurses_init = 0;
@@ -86,6 +87,7 @@ int input_handle(int wait) {
     return wait == 0 ? 1 : 0;
 
   nodelay(stdscr, wait?1:0);
+  errno = 0;
   while((ch = getch()) != ERR) {
     if(ch == KEY_RESIZE) {
       if(ncresize(min_rows, min_cols))
@@ -279,6 +281,15 @@ static void init_nc() {
 }
 
 
+void close_nc() {
+  if(ncurses_init) {
+    erase();
+    refresh();
+    endwin();
+  }
+}
+
+
 /* main program */
 int main(int argc, char **argv) {
   read_locale();
@@ -308,11 +319,7 @@ int main(int argc, char **argv) {
       break;
   }
 
-  if(ncurses_init) {
-    erase();
-    refresh();
-    endwin();
-  }
+  close_nc();
   exclude_clear();
 
   return 0;
