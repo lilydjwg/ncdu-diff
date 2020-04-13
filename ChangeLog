@@ -1,0 +1,159 @@
+1.14 - 2019-02-04
+	- Add mtime display and sorting (Alex Wilson)
+	- Add (limited) --follow-symlinks option (Simon Doppler)
+	- Display larger file counts in browser UI
+	- Add -V, --version, and --help alias flags
+	- Fix crash when attempting to sort an empty directory
+	- Fix 100% CPU bug when ncdu loses the terminal
+	- Fix '--color=off' flag
+	- Fix some typos
+
+1.13 - 2018-01-29
+	- Add "extended information" mode and -e flag
+	- Add file mode, modification time and uid/gid to info window with -e
+	- Add experimental color support and --color flag
+	- Add -rr option to disable shell spawning
+	- Remove directory nesting limit on file import
+	- Fix handling of interrupts during file import
+	- Fix undefined behavior that triggered crash on OS X
+
+1.12 - 2016-08-24
+	- Add NCDU_SHELL environment variable
+	- Add --confirm-quit flag
+	- Fix compilation due to missing sys/wait.h include
+
+1.11 - 2015-04-05
+	- Added 'b' key to spawn shell in the current directory
+	- Support scanning (and refreshing) of empty directories
+	- Added --si flag for base 10 prefixes
+	- Fix toggle dirs before files
+
+1.10 - 2013-05-09
+	- Added 'c' key to display item counts
+	- Added 'C' key to order by item counts
+	- Added CACHEDIR.TAG support and --exclude-caches option
+	- Use locale-dependent thousand separator
+	- Use pkg-config to detect ncurses
+	- Clip file/dir sizes to 8 EiB minus one byte
+	- Fix buffer overflow when formatting huge file sizes
+
+1.9 - 2012-09-27
+	- Added option to dump scanned directory information to a file (-o)
+	- Added option to load scanned directory information from a file (-f)
+	- Added multiple scan and load interfaces (-0,-1,-2)
+	- Fit loading and error windows to the terminal width (#13)
+	- Fix symlink resolving bug (#18)
+	- Fix path display when scanning an empty directory (#15)
+	- Fix hang when terminal is resized to a too small size while loading
+	- Use top-level automake build
+	- Remove useless AUTHORS, INSTALL and NEWS files
+	- ncdu.1 now uses POD as source format
+
+1.8 - 2011-11-03
+	- Use hash table to speed up hard link detection
+	- Added read-only option (-r)
+	- Use KiB instead of kiB (#3399279)
+
+1.7 - 2010-08-13
+	- List the detected hard links in file info window
+	- Count the size of a hard linked file once for each directory it appears in
+	- Fixed crash on browsing dirs with a small window size (#2991787)
+	- Fixed buffer overflow when some directories can't be scanned (#2981704)
+	- Fixed segfault when launched on a nonexistant directory (#3012787)
+	- Fixed segfault when root dir only contains hidden files
+	- Improved browsing performance
+	- More intuitive multi-page browsing
+	- Display size graph by default
+	- Various minor fixes
+
+1.6 - 2009-10-23
+	- Implemented hard link detection
+	- Properly select the next item after deletion
+	- Removed reliance of dirfd()
+	- Fixed non-void return in void delete_process()
+	- Fixed several tiny memory leaks
+	- Return to previously opened directory on failed recalculation
+	- Properly display MiB units instead of MB (IEEE 1541 - bug #2831412)
+	- Link to ncursesw when available
+	- Improved support for non-ASCII characters
+	- VIM keybindings for browsing through the tree (#2788249, #1880622)
+
+1.5 - 2009-05-02
+	- Fixed incorrect apparent size on directory refresh
+	- Browsing keys now work while file info window is displayed
+	- Current directory is assumed when no directory is specified
+	- Size graph uses the apparent size if that is displayed
+	- Items are ordered by displayed size rather than disk usage
+	- Removed switching between powers of 1000/1024
+	- Don't rely on the availability of suseconds_t
+	- Correctly handle paths longer than PATH_MAX
+	- Fixed various bugs related to rpath()
+	- Major code rewrite
+	- Fixed line width when displaying 100%
+
+1.4 - 2008-09-10
+	- Removed the startup window
+	- Filenames ending with a tidle (~) will now also
+	  be hidden with the 'h'-key
+	- Fixed buffer overflow when supplying a path longer
+	  than PATH_MAX	(patch by Tobias Stoeckmann)
+	- Used S_BLKSIZE instead of a hardcoded block size of 512
+	- Fixed display of disk usage and apparent sizes
+	- Updated ncdu -h
+	- Included patches for Cygwin
+	- Cursor now follows the selected item
+	- Added spaces around path (debian #472194)
+	- Fixed segfault on empty directory (debian #472294)
+	- A few code rewrites and improvements
+
+1.3 - 2007-08-05
+	- Added 'r'-key to refresh the current directory
+	- Removed option to calculate apparent size: both
+	  the disk usage and the apparent size are calculated.
+	- Added 'a'-key to switch between showing apparent
+	  size and disk usage.
+	- Added 'i'-key to display information about the
+	  selected item.
+	- Small performance improvements
+	- configure checks for ncurses.h (bug #1764304)
+
+1.2 - 2007-07-24
+	- Fixed some bugs on cygwin
+	- Added du-like exclude patterns
+	- Fixed bug #1758403: large directories work fine now
+	- Rewrote a large part of the code
+	- Fixed a bug with wide characters
+	- Performance improvements when browsing large dirs
+
+1.1 - 2007-04-30
+	- Deleting files and directories is now possible from
+	  within ncdu.
+	- The key for sorting directories between files has
+	  changed to 't' instead of 'd'. The 'd'-key is now
+	  used for deleting files.
+
+1.0 - 2007-04-06
+	- First stable release
+	- Small code cleanup
+	- Added a key to toggle between sorting dirs before
+	  files and dirs between files
+	- Added graphs and percentages to the directory
+	  browser (can be enabled or disabled with the 'g'-key)
+
+0.3 - 2007-03-04
+	- When browsing back to the previous directory, the
+	  directory you're getting back from will be selected.
+	- Added directory scanning in quiet mode to save
+	  bandwidth on remote connections.
+
+0.2 - 2007-02-26
+	- Fixed POSIX compliance: replaced realpath() with my
+	  own implementation, and gettimeofday() is not
+	  required anymore (but highly recommended)
+	- Added a warning for terminals smaller than 60x16
+	- Mountpoints (or any other directory pointing to
+	  another filesystem) are now considered to be
+	  directories rather than files.
+
+0.1 - 2007-02-21
+	- Initial version
