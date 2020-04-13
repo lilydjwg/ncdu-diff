@@ -457,6 +457,7 @@ static int itemdir(uint64_t dev) {
  * ctx->buf_dir, ctx->buf_ext and ctx->buf_name. */
 static int iteminfo() {
   uint64_t iv;
+  int64_t siv;
 
   E(*ctx->buf != '{', "Expected JSON object");
   con(1);
@@ -470,11 +471,11 @@ static int iteminfo() {
       E(ctx->val[MAX_VAL-1] != 1, "Too large string value");
       strcpy(ctx->buf_name, ctx->val);
     } else if(strcmp(ctx->val, "asize") == 0) {      /* asize */
-      C(rsint64(&iv, INT64_MAX));
-      ctx->buf_dir->asize = iv;
+      C(rsint64(&siv, INT64_MAX));
+      ctx->buf_dir->asize = siv;
     } else if(strcmp(ctx->val, "dsize") == 0) {      /* dsize */
-      C(rsint64(&iv, INT64_MAX));
-      ctx->buf_dir->size = iv;
+      C(rsint64(&siv, INT64_MAX));
+      ctx->buf_dir->size = siv;
     } else if(strcmp(ctx->val, "dev") == 0) {        /* dev */
       C(rint64(&iv, UINT64_MAX));
       ctx->buf_dir->dev = iv;

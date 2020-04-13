@@ -111,7 +111,7 @@ static int dirlist_cmp(struct dir *x, struct dir *y) {
 
 static struct dir *dirlist_sort(struct dir *list) {
   struct dir *p, *q, *e, *tail;
-  int insize, nmerges, psize, qsize, i;
+  int64_t insize, nmerges, psize, qsize, i;
 
   insize = 1;
   while(1) {
