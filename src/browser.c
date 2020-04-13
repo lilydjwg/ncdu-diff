@@ -233,7 +233,7 @@ static void browse_draw_item(struct dir *n, int row) {
 
   if(n != dirlist_parent)
     printsize(c, show_as ? n->asize : n->size);
-  x += 10;
+  x += 11;
   move(row, x);
 
   browse_draw_graph(n, &x);
