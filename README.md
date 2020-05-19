@@ -9,7 +9,7 @@ make
 make install
 ```
 
-Copy `ncdu-diff` somewhere (e.g. in your `$PATH`). You'll need Python to run it.
+Copy `ncdu-diff` and `ncdu-diffdir` somewhere (e.g. in your `$PATH`). You'll need Python to run them.
 
 ## Usage
 
