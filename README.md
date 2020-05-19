@@ -13,6 +13,14 @@ Copy `ncdu-diff` somewhere (e.g. in your `$PATH`). You'll need Python to run it.
 
 ## Usage
 
+Run:
+
+```sh
+ncdu-diffdir /directory/a /directory/b
+```
+
+Or you can do steps manually (and optionally save intermediate results.
+
 Export two scan results:
 
 ```sh
