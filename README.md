@@ -1,5 +1,9 @@
 ncdu fork that can compare and diff results
 
+## NOTICE
+
+Please use [gdu](https://github.com/dundee/gdu) (which doesn't need to be patched) and [gdu-diff](https://github.com/lilydjwg/gdu-diff) to accomplish the same tasks.
+
 ## Compile and Install
 
 ```sh
